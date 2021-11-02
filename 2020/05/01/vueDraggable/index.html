@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html>
+<head hexo-theme='https://volantis.js.org/#2.6.6'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- 页面元数据 -->
+  
+    <title>Vue-Draggable拖拽实现可视化小程序模板 - littleWhale</title>
+  
+    <meta name="keywords" content="业务">
+  
+  
+    <meta name="description" content="功能操作流程
+从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。
+中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。
+支持同类型多组件。从左侧拖入相同组件的时候，会先从中间容器拷贝同类型的部件。重用样式。每个部件id值唯一。
+中间容器 选中某个部件，在选中的部件右上角显示...">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
+    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+    <!-- ba -->
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+	  setTimeout(function() { 
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?6b3fb1292e27273cec08f6f75406a761";
+		hm.defer=true;
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+	  }, 5000);
+    })();
+    </script>
+  
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            littleWhale
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-book fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/paint/
+                  
+                  
+                  
+                    id="paint"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>胖橙的画廊
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=https://mi.aliyun.com/shop/43068
+                  
+                    rel="external nofollow noopener noreferrer"
+                  
+                  
+                    target="_blank"
+                  
+                  
+                    id="https:mialiyuncomshop43068"
+                  >
+                  <i class='fas fa-link fa-fw'></i>域名出售
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="搜索..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-book fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/paint/
+                  
+                  
+                  
+                    id="paint"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>胖橙的画廊
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=https://mi.aliyun.com/shop/43068
+                  
+                    rel="external nofollow noopener noreferrer"
+                  
+                  
+                    target="_blank"
+                  
+                  
+                    id="https:mialiyuncomshop43068"
+                  >
+                  <i class='fas fa-link fa-fw'></i>域名出售
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box reveal shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  <h1 class="title">
+    <a href="/2020/05/01/vueDraggable/">
+      Vue-Draggable拖拽实现可视化小程序模板
+    </a>
+  </h1>
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://littleWhale.xyz" target="_blank" rel="nofollow noopener">
+    <img src="https://qyanblog.oss-cn-shenzhen.aliyuncs.com/blog_avatar.JPG">
+    <p>高颖</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/Vue/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>Vue</p>
+    </a>
+  </div>
+
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2020年5月1日</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <h2 id="功能操作流程"><a href="#功能操作流程" class="headerlink" title="功能操作流程"></a>功能操作流程</h2><ol>
+<li>从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。</li>
+<li>中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。</li>
+<li>支持同类型多组件。从左侧拖入相同组件的时候，会先从中间容器拷贝同类型的部件。重用样式。每个部件id值唯一。</li>
+<li>中间容器 选中某个部件，在选中的部件右上角显示删除按钮。右边显示对应的部件属性。</li>
+<li>修改右边对应的部件属性，中间容器对应的部件可实时显示效果。</li>
+<li>右边部件的属性根据 每个部件的类型不同而决定。</li>
+<li>中间容器下方底部可设置大容器的页面背景颜色。</li>
+<li>最后提交保存全部部件的属性。这样就完成了一个页面模板。 下次页面模板编辑的时候，页面进入直接显示实时效果。<br><img src="https://img-blog.csdnimg.cn/20200501175457712.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5MTY4MjE=,size_16,color_FFFFFF,t_70" alt="图片"><a id="more"></a>
+<h3 id="插件配置"><a href="#插件配置" class="headerlink" title="插件配置"></a>插件配置</h3>我们在package.json文件中导入vuedraggable插件<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"dependencies": &#123;</span><br><span class="line">    "vuedraggable": "^2.23.2"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="DragList组件布局与属性配置"><a href="#DragList组件布局与属性配置" class="headerlink" title="DragList组件布局与属性配置"></a>DragList组件布局与属性配置</h3>在我们自定义的组件DragList中开始布局，首先引入vuedraggable。</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--定义左边的组件容器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">draggable</span> <span class="attr">class</span>=<span class="string">"drop-box1"</span> <span class="attr">:class</span>=<span class="string">"dropConClass.left"</span> <span class="attr">:options</span>=<span class="string">"options1"</span> <span class="attr">:value</span>=<span class="string">"list1"</span>   @<span class="attr">input</span>=<span class="string">"handleListChange($event, 'left')"</span> @<span class="attr">end</span>=<span class="string">"handleEnd($event, 'left')"</span> &gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">i-col</span> <span class="attr">:xs</span>=<span class="string">"24"</span>  <span class="attr">v-for</span>=<span class="string">"(itemLeft, index) in list1"</span> <span class="attr">:key</span>=<span class="string">"`drag_li1_$&#123;index&#125;`"</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"left"</span> <span class="attr">:itemLeft</span>=<span class="string">"itemLeft"</span>&gt;</span>&#123;&#123; itemLeft &#125;&#125;<span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">i-col</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">draggable</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--定义中间的容器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">draggable</span> <span class="attr">class</span>=<span class="string">"drop-box2"</span> <span class="attr">:class</span>=<span class="string">"dropConClass.right"</span>   <span class="attr">:style</span>=<span class="string">"&#123;background: mpContainerBgColor || ''&#125;"</span>  <span class="attr">:options</span>=<span class="string">"options"</span> <span class="attr">:value</span>=<span class="string">"list2"</span> @<span class="attr">input</span>=<span class="string">"handleListChange($event, 'right')"</span> @<span class="attr">end</span>=<span class="string">"handleEnd($event, 'right')"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"drag-list-item"</span> <span class="attr">v-for</span>=<span class="string">"(itemRight, index) in list2"</span> <span class="attr">:key</span>=<span class="string">"`drag_li2_$&#123;index&#125;`"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"right"</span> <span class="attr">:itemRight</span>=<span class="string">"itemRight"</span>&gt;</span>&#123;&#123; itemRight &#125;&#125;<span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">draggable</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们对draggable组件都绑定了@input 和 @end 事件，然后通过属性:options来设置这两个容器的属性配置。通过:value来绑定数据源。接下来我们看js的配置。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> draggable <span class="keyword">from</span> <span class="string">'vuedraggable'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'DragList'</span>,</span><br><span class="line">  components: &#123;</span><br><span class="line">    draggable</span><br><span class="line">  &#125;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    list1: &#123;</span><br><span class="line">      type: <span class="built_in">Array</span>,</span><br><span class="line">      required: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    list2: &#123;</span><br><span class="line">      type: <span class="built_in">Array</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="function"><span class="params">()</span> =&gt;</span> []</span><br><span class="line">    &#125;,</span><br><span class="line">    dropConClass: &#123;</span><br><span class="line">      type: <span class="built_in">Object</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="function"><span class="params">()</span> =&gt;</span> (&#123;&#125;)</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    mpContainerBgColor:&#123;  <span class="comment">//小程序背景色</span></span><br><span class="line">       type: <span class="built_in">String</span>,</span><br><span class="line">       <span class="keyword">default</span>:<span class="string">'#666666'</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line"></span><br><span class="line">      options1: &#123;<span class="attr">group</span>:&#123;<span class="attr">name</span>: <span class="string">'drag_list'</span>,<span class="attr">pull</span>:<span class="string">'clone'</span>,<span class="attr">put</span>:<span class="literal">false</span>&#125;,<span class="attr">sort</span>:<span class="literal">false</span>&#125;, <span class="comment">//clone表示赋值，左侧无需删除节点。</span></span><br><span class="line">      options: &#123; <span class="attr">group</span>: <span class="string">'drag_list'</span> &#125;,</span><br><span class="line">      containerBgColor:<span class="string">'#ffffff'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过options1属性，我们约定了左边可选组件和容器组件都属于一个group：drag_list，不同的是，options1约定左侧组件pull拖出的时候是属于克隆，put控制不可拖入。sort控制不可进行拖动排序。options对应的容器只设置了group组，其他属性不设置。默认开启。<br>容器的背景色变化：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">created:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="keyword">this</span>.containerBgColor = <span class="keyword">this</span>.mpContainerBgColor; <span class="comment">//首次给颜色器填充颜色</span></span><br><span class="line"></span><br><span class="line"> &#125;,</span><br><span class="line"> watch:&#123;</span><br><span class="line">   containerBgColor:<span class="function"><span class="keyword">function</span>(<span class="params">newValue,oldValue</span>)</span>&#123;</span><br><span class="line">     <span class="comment">// console.log('颜色发生改变,需要传递到父容器');</span></span><br><span class="line">     <span class="keyword">this</span>.$emit(<span class="string">'on-mpContainerBgColor-change'</span>,newValue);</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure></p>
+<h3 id="wechatAppViewer页面布局"><a href="#wechatAppViewer页面布局" class="headerlink" title="wechatAppViewer页面布局"></a>wechatAppViewer页面布局</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">DragList</span> <span class="attr">ref</span>=<span class="string">"DragList"</span>  <span class="attr">:list1.sync</span>=<span class="string">"list1"</span> <span class="attr">:list2.sync</span>=<span class="string">"list2"</span> @<span class="attr">on-mpContainerItemAdd</span>=<span class="string">"chooseSelectedMPItemLayout"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">:mpContainerBgColor</span>=<span class="string">"mpContainerBgColor"</span> @<span class="attr">on-mpContainerBgColor-change</span>=<span class="string">"refreshMpContainerBgColor"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">:dropConClass</span>=<span class="string">"dropConClass"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">DragList</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"> data() &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line"></span><br><span class="line">        list1: [], <span class="comment">//拖拽组件</span></span><br><span class="line">        list2: [], <span class="comment">//容器布局部件</span></span><br><span class="line">        dropConClass: &#123;</span><br><span class="line">          left: [<span class="string">'drop-box'</span>, <span class="string">'left-drop-box'</span>],</span><br><span class="line">          right: [<span class="string">'drop-box'</span>, <span class="string">'right-drop-box'</span>]</span><br><span class="line">        &#125;,</span><br><span class="line">        pageTitle: <span class="string">''</span>,</span><br><span class="line">        selectedMPItemId: <span class="string">''</span>, <span class="comment">//当前在小程序预览界面选中的item布局</span></span><br><span class="line">        backgroundMpLayoutItem: <span class="literal">null</span>, <span class="comment">//背景色item</span></span><br><span class="line">        mpContainerBgColor: <span class="string">'#8BC34A'</span>, <span class="comment">//背景色</span></span><br><span class="line">        mpSampleDataList: [], <span class="comment">//样板元数据列表</span></span><br><span class="line">        originItemConfigs:<span class="string">''</span>, <span class="comment">//编辑页面进入时候记录小程序的配置项</span></span><br><span class="line">        pageId: <span class="literal">null</span>, <span class="comment">//案例id</span></span><br><span class="line">		config:&#123;&#125;, <span class="comment">//演示</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//先请求样板数据，再请求list2数据；dragBox 加入属性：mpSampleDataList （样板数据），方便盒子在add组件的时候追加样板属性。</span></span><br><span class="line">        <span class="comment">//1、样板数据：先加载这个列表。在左侧组件拖入的时候，取出对应的元数据追加上去。每一项组件里的属性 统一字段为mpItemData代表样板数据；</span></span><br><span class="line">        <span class="comment">//2、模板二次编辑的时候，根据是否自动加载数据决定显示样板元数据还是自动加载的数据。list2请求完的时候，根据是否为自动加载数据开关控制是否追加 mpItemData 初始样板数据。</span></span><br><span class="line">        <span class="comment">//3、 自动加载数据勾选，mpItemData = nil,  取消勾选：mpItemData 赋值。（为了方便，统一在第2步 list2加载完成，给所有部件item 追加mpItemData。界面显示只是根据开关是否自动加载数据来取原数据还是样板数据。）</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created() &#123;</span><br><span class="line">      <span class="keyword">this</span>.queryMPItemSampleData(); <span class="comment">//先加载完组件样板，再加载list1，2列表；</span></span><br><span class="line">    &#125;,</span><br><span class="line">     watch: &#123;</span><br><span class="line">      <span class="comment">//监听背景项被设置情况。触发背景样式。</span></span><br><span class="line">      backgroundMpLayoutItem: &#123;</span><br><span class="line">        handler(newValue, oldValue) &#123;</span><br><span class="line">          <span class="keyword">if</span> (newValue.config) &#123;</span><br><span class="line">            <span class="keyword">this</span>.mpContainerBgColor = newValue.config.bgColor;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        deep: <span class="literal">true</span> <span class="comment">//这样对象的属性发生改变也能够监听到。</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line"></span><br><span class="line">      refreshMpContainerBgColor: <span class="function"><span class="keyword">function</span>(<span class="params">color</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//对象也要调用设置属性的方法才会触发监听；</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.backgroundMpLayoutItem)&#123;</span><br><span class="line">          <span class="keyword">this</span>.$<span class="keyword">set</span>(this.backgroundMpLayoutItem, "config", &#123;</span><br><span class="line">            bgColor: color</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="draggable-拖动组件到容器"><a href="#draggable-拖动组件到容器" class="headerlink" title="draggable 拖动组件到容器"></a>draggable 拖动组件到容器</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">methods: &#123;</span><br><span class="line">    handleListChange (value, type) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (type === <span class="string">'left'</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>.$emit(<span class="string">'update:list1'</span>, value)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">this</span>.$emit(<span class="string">'update:list2'</span>, value)</span><br><span class="line">    &#125;,</span><br><span class="line">     handleEnd (event, type) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> srcClassName = (event.srcElement || event.target).classList[<span class="number">0</span>]</span><br><span class="line">      <span class="keyword">const</span> targetClassName = event.to.classList[<span class="number">0</span>]</span><br><span class="line">      <span class="keyword">let</span> src = <span class="string">''</span></span><br><span class="line">      <span class="keyword">let</span> target = <span class="string">''</span></span><br><span class="line">      <span class="keyword">if</span> (srcClassName === targetClassName) &#123;</span><br><span class="line">        <span class="keyword">if</span> (type === <span class="string">'left'</span>) &#123;</span><br><span class="line">          src = <span class="string">'left'</span></span><br><span class="line">          target = <span class="string">'left'</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          src = <span class="string">'right'</span></span><br><span class="line">          target = <span class="string">'right'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (type === <span class="string">'left'</span>) &#123;</span><br><span class="line">          src = <span class="string">'left'</span></span><br><span class="line">          target = <span class="string">'right'</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          src = <span class="string">'right'</span></span><br><span class="line">          target = <span class="string">'left'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//当从左侧组件拖中某个UI组件到容器时</span></span><br><span class="line">      <span class="keyword">if</span>(src == <span class="string">'left'</span> &amp;&amp; target == <span class="string">'right'</span>)&#123;</span><br><span class="line"></span><br><span class="line">         <span class="comment">//默认从左侧组件取对应的模板数据的。</span></span><br><span class="line">         <span class="keyword">let</span> targetCompomentItem = <span class="keyword">this</span>.list1[event.oldIndex];</span><br><span class="line"></span><br><span class="line">         <span class="comment">//拷贝一份</span></span><br><span class="line">         <span class="keyword">let</span> newRightDic = &#123;&#125;;</span><br><span class="line">         <span class="built_in">Object</span>.keys(targetCompomentItem).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">key</span>)</span>&#123;</span><br><span class="line">            newRightDic[key] = targetCompomentItem[key]; <span class="comment">//config的data是引用类型。得注意clone;</span></span><br><span class="line">         &#125;);</span><br><span class="line"></span><br><span class="line">         <span class="comment">//覆盖谓一值id,区分每个小程序部件的独立性。</span></span><br><span class="line">         newRightDic[<span class="string">'mpItemId'</span>] = <span class="string">'mpItem_'</span>+ <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span><br><span class="line"></span><br><span class="line">         <span class="comment">//重新设置新的拖入位置的对象。</span></span><br><span class="line">         <span class="keyword">this</span>.list2[event.newIndex] = newRightDic;</span><br><span class="line">         <span class="keyword">this</span>.$emit(<span class="string">'on-mpContainerItemAdd'</span>,<span class="keyword">this</span>.list2[event.newIndex]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当左侧拖动UI组件到右侧的时候，对数据对象进行copy一份，然后生成唯一的mpItemId,以保证可以拖入重复的UI组件。然后设置list2的新数据。最后回调on-mpContainerItemAdd事件，把新数据传递到最右侧的属性显示器组件中。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//选中小程序页面部件</span></span><br><span class="line">chooseSelectedMPItemLayout: <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">this</span>.selectedMPItemId = e.mpItemId;</span><br><span class="line">   <span class="keyword">let</span> that = <span class="keyword">this</span>;</span><br><span class="line">   <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">   that.$refs.EditConfigOptions.initial(e, <span class="string">'modify'</span>);</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>EditConfigOptions组件的initial方法,<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">methods: &#123;</span><br><span class="line">      initial: <span class="function"><span class="keyword">function</span> (<span class="params">t, k</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.handleReset(), <span class="keyword">this</span>.isVisible = <span class="literal">true</span>, <span class="keyword">this</span>.pageId = <span class="keyword">this</span>.$route.query.id, <span class="keyword">this</span>.payload = t;</span><br><span class="line">        k == <span class="string">'modify'</span> ? (<span class="keyword">this</span>.isEdit = <span class="literal">true</span>, <span class="keyword">this</span>.modifyId = t.itemId, <span class="keyword">this</span>.detailDecorateGroup(t)) : (<span class="keyword">this</span>.isEdit = <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">this</span>.typeList.forEach(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (e.id == <span class="keyword">this</span>.payload.type) &#123;</span><br><span class="line">            <span class="keyword">this</span>.options = e.options;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"对象点击属性。。。。"</span>);</span><br><span class="line">        <span class="keyword">this</span>.validate(); <span class="comment">//让对象属性config进行回传；</span></span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="当选中某一个已添加到容器的组件时"><a href="#当选中某一个已添加到容器的组件时" class="headerlink" title="当选中某一个已添加到容器的组件时"></a>当选中某一个已添加到容器的组件时</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">shadow</span> <span class="attr">class</span>=<span class="string">"drag-right-item"</span> <span class="attr">slot</span>=<span class="string">"right"</span> <span class="attr">slot-scope</span>=<span class="string">"right"</span> <span class="attr">v-bind:class</span>=<span class="string">"selectedMPItemId==right.itemRight.mpItemId?'MPItemLayoutSelectedShowBorder':'MPItemLayoutNormalShowBorder'"</span></span></span><br><span class="line"><span class="tag">            @<span class="attr">click</span>=<span class="string">"chooseSelectedMPItemLayout(right.itemRight)"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"closeItemView"</span> @<span class="attr">click</span>=<span class="string">"delMpItemLayoutCompoment(right.itemRight)"</span> <span class="attr">v-bind:style</span>=<span class="string">"&#123;display:selectedMPItemId==right.itemRight.mpItemId?'':'none'&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">img</span></span></span><br><span class="line"><span class="tag">       <span class="attr">src</span>=<span class="string">"../assets/image/mp_close.png"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">       组件类型判断显示相应的UI组件....</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当点击时候，需要把某项数据对象传递到属性编辑器组件中。当点击删除按钮时候，删除list2某一项数据。根据mpItemId找出对应的item下标进行删除该对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">delMpItemLayoutCompoment: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> that = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.$Modal.confirm(&#123;</span><br><span class="line">          title: <span class="string">'提示'</span>,</span><br><span class="line">          width: <span class="number">280</span>,</span><br><span class="line">          content: <span class="string">'&lt;p&gt;是否删除改组件&lt;/p&gt;'</span>,</span><br><span class="line">          onOk: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">            that.list2.splice(that.list2.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item.mpItemId === data.mpItemId), <span class="number">1</span>);</span><br><span class="line">          &#125;,</span><br><span class="line">          onCancel: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="编辑属性容器组件"><a href="#编辑属性容器组件" class="headerlink" title="编辑属性容器组件"></a>编辑属性容器组件</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">EditConfigOptions</span> <span class="attr">ref</span>=<span class="string">"EditConfigOptions"</span> @<span class="attr">on-options-change</span>=<span class="string">"refreshMiniProgramLayout"</span>&gt;</span><span class="tag">&lt;/<span class="name">EditConfigOptions</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>EditConfigOptions里的组件属性发生变更时，将会触发refreshMiniProgramLayout方法，当数组里某对象发生变更时候，记住需要用this.$set方式重写对数组某一下标对象覆盖，这样才会触发list2.sync变更和刷新<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">refreshMiniProgramLayout: <span class="function"><span class="keyword">function</span>(<span class="params">mpItemId, options</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> findObjIndex = <span class="keyword">this</span>.list2.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item.mpItemId === mpItemId);</span><br><span class="line">     <span class="comment">//list2找到该对象，则处理。找不到，可能删除了就不处理。</span></span><br><span class="line">     <span class="keyword">if</span> (findObjIndex != <span class="number">-1</span>) &#123;</span><br><span class="line">       <span class="keyword">let</span> mpItemLayoutObj = <span class="keyword">this</span>.list2[findObjIndex];</span><br><span class="line">       mpItemLayoutObj.config = options;</span><br><span class="line">       <span class="keyword">this</span>.$<span class="keyword">set</span>(this.list2, findObjIndex, mpItemLayoutObj);</span><br><span class="line">       //需要触发数组的<span class="keyword">set</span>方法，文档节点才会更新。</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     if(this.originItemConfigs.length == 0)&#123;</span><br><span class="line">       <span class="comment">//记录页面加载进来的原有小程序样式字符串。用于判断是否变更。</span></span><br><span class="line">       <span class="keyword">this</span>.originItemConfigs = <span class="keyword">this</span>.getMpLyaoutItemsConfigStr();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>我们来看EditConfigOptions组件是如何对所有属性做到监听的。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">handleReset() &#123;</span><br><span class="line">        <span class="keyword">this</span>.isActive = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">this</span>.options = [];</span><br><span class="line">        <span class="keyword">this</span>.category = [] <span class="comment">//链接类型</span></span><br><span class="line">        <span class="keyword">this</span>.target = []  <span class="comment">//目标类型</span></span><br><span class="line">        <span class="keyword">this</span>.navigation = []  <span class="comment">//图文导航</span></span><br><span class="line">        <span class="keyword">this</span>.navigator = []  <span class="comment">//图文导航</span></span><br><span class="line">        <span class="keyword">this</span>.navigate = []  <span class="comment">//图文导航</span></span><br><span class="line">        <span class="keyword">this</span>.division = []  <span class="comment">//分割线图片</span></span><br><span class="line">        <span class="keyword">this</span>.key = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">this</span>.isShow = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">this</span>.operationForm = &#123;</span><br><span class="line"></span><br><span class="line">          style: <span class="string">''</span>,</span><br><span class="line">          styleName: <span class="string">''</span>,  <span class="comment">//商家信息 //优惠券  //</span></span><br><span class="line">          containerBgColor: <span class="string">''</span>, <span class="comment">// 大容器背景颜色</span></span><br><span class="line">          cardBgColor: <span class="string">'#ffffff'</span>, <span class="comment">// 卡片背景色</span></span><br><span class="line">          moduleTitle: <span class="string">''</span>, <span class="comment">//部件名称</span></span><br><span class="line">          titleColor: <span class="string">'#333333'</span>,  <span class="comment">//店铺名称颜色</span></span><br><span class="line">          cardTextColor: <span class="string">'#ffffff'</span>, <span class="comment">//卡片字体颜色</span></span><br><span class="line">          priceColor: <span class="string">'#EE2C2C'</span>,   <span class="comment">//价格颜色</span></span><br><span class="line">          purchaseButtonBgColor: <span class="string">'#EA1A1A'</span>,  <span class="comment">//购买按钮背景色</span></span><br><span class="line">          purchaseButtonTitleColor: <span class="string">'#ffffff'</span>,  <span class="comment">//购买按钮字体颜色</span></span><br><span class="line">          ProgressBgColor: <span class="string">'#ffffff'</span>,  <span class="comment">//进度条背景色</span></span><br><span class="line">          APProgressBgColor: <span class="string">'#ffffff'</span>,   <span class="comment">//已完成进度条背景色</span></span><br><span class="line">          subtitle: <span class="literal">null</span>,</span><br><span class="line">          linkType: <span class="literal">null</span>,  <span class="comment">//</span></span><br><span class="line">          linkTargetId: <span class="literal">null</span>,</span><br><span class="line">          headTitleColor: <span class="string">'#333333'</span>, <span class="comment">//头部文字颜色</span></span><br><span class="line">          headBgColor: <span class="string">''</span>, <span class="comment">//头部背景色</span></span><br><span class="line">          headerTitle:<span class="string">''</span>,</span><br><span class="line">          bgColor: <span class="string">'#ffffff'</span>,</span><br><span class="line">          timeColor: <span class="string">'#999999'</span>,<span class="comment">//有效期颜色 -- 代金卷</span></span><br><span class="line">          amountColor: <span class="string">'#999999'</span>, <span class="comment">//原价颜色  -- 代金卷</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><br>通过watch方法对这些对象属性或者数组变更进行监听<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">watch:&#123;</span><br><span class="line">      operationForm:&#123;</span><br><span class="line">          handler(newValue,oldValue)&#123;</span><br><span class="line">              <span class="keyword">if</span>(<span class="built_in">Object</span>.is(newValue,oldValue))&#123;</span><br><span class="line">                <span class="keyword">this</span>.validate();</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          deep:<span class="literal">true</span>  <span class="comment">//监听对象每一个属性的变化</span></span><br><span class="line">      &#125;,</span><br><span class="line">      navigation:&#123;</span><br><span class="line">         handler(newValue,oldValue)&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">"navigation菜单发生监听变化。"</span>);</span><br><span class="line">         &#125;,</span><br><span class="line">         deep:<span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">      navigator:&#123;</span><br><span class="line">        handler(newValue,oldValue)&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">"navigator魔方发生监听变化。"</span>);</span><br><span class="line">        &#125;,</span><br><span class="line">        deep:<span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><br>当每次用户选中某容器的时候都会调用EditConfigOptions组件的initial方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">initial: <span class="function"><span class="keyword">function</span> (<span class="params">t, k</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.handleReset(), <span class="keyword">this</span>.isVisible = <span class="literal">true</span>, <span class="keyword">this</span>.pageId = <span class="keyword">this</span>.$route.query.id, <span class="keyword">this</span>.payload = t;</span><br><span class="line">        k == <span class="string">'modify'</span> ? (<span class="keyword">this</span>.isEdit = <span class="literal">true</span>, <span class="keyword">this</span>.modifyId = t.itemId, <span class="keyword">this</span>.detailDecorateGroup(t)) : (<span class="keyword">this</span>.isEdit = <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">this</span>.typeList.forEach(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (e.id == <span class="keyword">this</span>.payload.type) &#123;</span><br><span class="line">            <span class="keyword">this</span>.options = e.options;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.validate(); <span class="comment">//让对象属性config进行回传；</span></span><br><span class="line">&#125;,</span><br><span class="line"> <span class="comment">//验证表单是否通过</span></span><br><span class="line">validate() &#123;</span><br><span class="line">  <span class="keyword">let</span> t = <span class="keyword">this</span>, result = &#123;&#125;;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> t.operationForm.checkbox == <span class="string">"undefined"</span>)&#123;</span><br><span class="line">     t.operationForm.checkbox = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">switch</span> (t.payload.type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">10</span>:</span><br><span class="line">      <span class="comment">//页面背景组件</span></span><br><span class="line">      result = &#123;</span><br><span class="line">        bgColor: t.operationForm.bgColor</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">this</span>.handleConfirm(result)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">101</span>:</span><br><span class="line">      <span class="comment">//商户信息</span></span><br><span class="line">      result = &#123;</span><br><span class="line">        style: t.operationForm.style,</span><br><span class="line">        containerBgColor: t.operationForm.containerBgColor,</span><br><span class="line">        cardBgColor: t.operationForm.cardBgColor,</span><br><span class="line">        titleColor: t.operationForm.titleColor,</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">this</span>.handleConfirm(result)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">201</span>:</span><br><span class="line">      <span class="comment">//普通商品列表</span></span><br><span class="line">      result = &#123;</span><br><span class="line">        style: t.operationForm.style,</span><br><span class="line">        containerBgColor: t.operationForm.containerBgColor,</span><br><span class="line">        cardBgColor: t.operationForm.cardBgColor,</span><br><span class="line">        titleColor: t.operationForm.titleColor,</span><br><span class="line">        priceColor: t.operationForm.priceColor,</span><br><span class="line">        headTitleColor: t.operationForm.headTitleColor,</span><br><span class="line">        headerTitle:t.operationForm.headerTitle,</span><br><span class="line">        headBgColor: t.operationForm.headBgColor,</span><br><span class="line">        purchaseButtonBgColor: t.operationForm.purchaseButtonBgColor,</span><br><span class="line">        purchaseButtonTitleColor: t.operationForm.purchaseButtonTitleColor,</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">this</span>.handleConfirm(result)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">      <span class="comment">//等等......</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">handleConfirm(result) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//属性编辑的实时结果</span></span><br><span class="line">   <span class="built_in">Object</span>.assign(result,&#123;<span class="attr">moduleTitle</span>:<span class="keyword">this</span>.operationForm.moduleTitle&#125;);</span><br><span class="line">  <span class="keyword">let</span> optionsStr = <span class="built_in">JSON</span>.stringify(result);</span><br><span class="line">  <span class="built_in">console</span>.log(optionsStr);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"回传了"</span>);</span><br><span class="line">  <span class="keyword">this</span>.$emit(<span class="string">'on-options-change'</span>, <span class="keyword">this</span>.mpItemId,result);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><br>当属性变更即时发生数据json回传，然后替换对应的list2对象。这就实现了属性实时编辑立即展现效果的功能。</p>
+<h3 id="数据模板变动，提示用户需保存"><a href="#数据模板变动，提示用户需保存" class="headerlink" title="数据模板变动，提示用户需保存"></a>数据模板变动，提示用户需保存</h3><p>在wechatAppViewer页面路由变化处进行拦截判断：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">beforeRouteLeave: <span class="function"><span class="keyword">function</span> (<span class="params">t, e, i</span>) </span>&#123;</span><br><span class="line">     <span class="keyword">let</span> mpItemsConfigStr = <span class="keyword">this</span>.getMpLyaoutItemsConfigStr();</span><br><span class="line">     <span class="keyword">if</span>(mpItemsConfigStr != <span class="keyword">this</span>.originItemConfigs)&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> that = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.$Modal.confirm(&#123;</span><br><span class="line">          title: <span class="string">'提示'</span>,</span><br><span class="line">          width: <span class="number">280</span>,</span><br><span class="line">          okText:<span class="string">'保存'</span>,</span><br><span class="line">          content: <span class="string">'&lt;p&gt;模板已变动，是否需要保存？&lt;/p&gt;'</span>,</span><br><span class="line">          onOk: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">             that.mpItemUpdateBatch(<span class="string">"exit"</span>);</span><br><span class="line">          &#125;,</span><br><span class="line">          onCancel: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="comment">//离开页面；</span></span><br><span class="line">              i();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     i();</span><br><span class="line">   &#125;,</span><br></pre></td></tr></table></figure><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取小程序页面布局所有的部件configs字符串</span></span><br><span class="line">  getMpLyaoutItemsConfigStr()&#123;</span><br><span class="line">    <span class="keyword">let</span> t = <span class="keyword">this</span>;</span><br><span class="line">    <span class="comment">//循环所有，进行拼接。</span></span><br><span class="line">    <span class="keyword">var</span> configOptionsArr = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//追加背景</span></span><br><span class="line">    <span class="keyword">if</span>(t.backgroundMpLayoutItem)&#123;</span><br><span class="line">        <span class="keyword">if</span>(t.backgroundMpLayoutItem.config)&#123;</span><br><span class="line">          configOptionsArr.push(&#123;</span><br><span class="line">            config: t.backgroundMpLayoutItem.config,</span><br><span class="line">            title: <span class="string">''</span>,</span><br><span class="line">            type: t.backgroundMpLayoutItem.type</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          configOptionsArr.push(&#123;</span><br><span class="line">            config: &#123;<span class="attr">bgColor</span>:t.mpContainerBgColor&#125;,</span><br><span class="line">            title: <span class="string">''</span>,</span><br><span class="line">            type: t.backgroundMpLayoutItem.type</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; t.list2.length; i++) &#123;</span><br><span class="line">      <span class="keyword">let</span> mpItemObj = t.list2[i];</span><br><span class="line">      configOptionsArr.push(&#123;</span><br><span class="line">        config: mpItemObj.config,</span><br><span class="line">        title: <span class="string">''</span>,</span><br><span class="line">        type: mpItemObj.type</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">JSON</span>.stringify(configOptionsArr);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="保存模板数据到服务器"><a href="#保存模板数据到服务器" class="headerlink" title="保存模板数据到服务器"></a>保存模板数据到服务器</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"> mpItemUpdateBatch(cmdStr) &#123;</span><br><span class="line">     <span class="keyword">const</span> t = <span class="keyword">this</span></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">this</span>.$store.commit(<span class="string">"SET_LOADING"</span>, <span class="number">1</span>), <span class="keyword">this</span>.pageId = <span class="keyword">this</span>.$route.query.id, <span class="keyword">void</span> <span class="number">0</span> === <span class="keyword">this</span>.pageId || <span class="built_in">isNaN</span>(</span><br><span class="line">         <span class="keyword">this</span>.pageId)) &#123;</span><br><span class="line">       <span class="keyword">return</span> t.$Modal.error(&#123;</span><br><span class="line">         title: <span class="string">"错误提示"</span>,</span><br><span class="line">         content: <span class="string">"地址栏参数错误，请重试"</span>,</span><br><span class="line">         onOk: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">           t.$router.go(<span class="number">-1</span>)</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;), !<span class="number">1</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> itemConfigs = <span class="keyword">this</span>.getMpLyaoutItemsConfigStr();</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"保存的顺序"</span>);</span><br><span class="line">      <span class="built_in">console</span>.log(itemConfigs);</span><br><span class="line">     <span class="keyword">const</span> formData = <span class="built_in">Object</span>.assign(&#123;&#125;, config, &#123;</span><br><span class="line">       page_id: t.pageId,</span><br><span class="line">       item_configs: itemConfigs,</span><br><span class="line">       token: t.$store.state.token,</span><br><span class="line">       user_id: localStorage.getItem(<span class="string">"TOKEN_STATE"</span>)</span><br><span class="line">     &#125;)</span><br><span class="line">     t.$store.commit(<span class="string">"SET_LOADING"</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">   <span class="comment">//模拟</span></span><br><span class="line">   t.$Message.success(<span class="string">"操作成功"</span>);<span class="comment">//将formData数据提交到服务器</span></span><br><span class="line">   t.originItemConfigs = itemConfigs;</span><br><span class="line">   <span class="keyword">if</span>(cmdStr == <span class="string">"exit"</span>)&#123;</span><br><span class="line">        t.$router.back(); <span class="comment">//被动保存：路由发生变化时候，，需关闭回到上一级网页。</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+            <div class='article_footer'>
+              
+                
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+
+
+  
+
+  
+
+  
+    
+    
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://qyanblog.oss-cn-shenzhen.aliyuncs.com/wechat_littleWhale.JPG'
+        
+          height='225px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+              
+            </div>
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-11-02T11:15:14+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2021年11月2日</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/%E4%B8%9A%E5%8A%A1/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>业务</p></a></div>
+
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://www.littlewhale.xyz/2020/05/01/vueDraggable/&title=Vue-Draggable拖拽实现可视化小程序模板 - littleWhale&summary=功能操作流程
+从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。
+中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。
+支持同类型多组件。从左侧拖入相同组件的时候，会先从中间容器拷贝同类型的部件。重用样式。每个部件id值唯一。
+中间容器 选中某个部件，在选中的部件右上角显示删除按钮。右边显示对应的部件属性。
+修改右边对应的部件属性，中间容器对应的部件可实时显示效果。
+右边部件的属性根据 每个部件的类型不同而决定。
+中间容器下方底部可设置大容器的页面背景颜色。
+最后提交保存全部部件的属性。这样就完成了一个页面模板。 下次页面模板编辑的时候，页面进入直接显示实时效果。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://www.littlewhale.xyz/2020/05/01/vueDraggable/&title=Vue-Draggable拖拽实现可视化小程序模板 - littleWhale&summary=功能操作流程
+从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。
+中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。
+支持同类型多组件。从左侧拖入相同组件的时候，会先从中间容器拷贝同类型的部件。重用样式。每个部件id值唯一。
+中间容器 选中某个部件，在选中的部件右上角显示删除按钮。右边显示对应的部件属性。
+修改右边对应的部件属性，中间容器对应的部件可实时显示效果。
+右边部件的属性根据 每个部件的类型不同而决定。
+中间容器下方底部可设置大容器的页面背景颜色。
+最后提交保存全部部件的属性。这样就完成了一个页面模板。 下次页面模板编辑的时候，页面进入直接显示实时效果。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://www.littlewhale.xyz/2020/05/01/vueDraggable/&title=Vue-Draggable拖拽实现可视化小程序模板 - littleWhale&summary=功能操作流程
+从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。
+中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。
+支持同类型多组件。从左侧拖入相同组件的时候，会先从中间容器拷贝同类型的部件。重用样式。每个部件id值唯一。
+中间容器 选中某个部件，在选中的部件右上角显示删除按钮。右边显示对应的部件属性。
+修改右边对应的部件属性，中间容器对应的部件可实时显示效果。
+右边部件的属性根据 每个部件的类型不同而决定。
+中间容器下方底部可设置大容器的页面背景颜色。
+最后提交保存全部部件的属性。这样就完成了一个页面模板。 下次页面模板编辑的时候，页面进入直接显示实时效果。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+              <a class='prev' href='/2020/05/10/EChart/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>E-chart 实现订单数据看板</p>
+                <p class='content'>Echart数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百...</p>
+              </a>
+            
+            
+              <a class='next' href='/2020/04/28/WeuiUploader/'>
+                <p class='title'>Weui-Uploader实现H5页面上传手机图片<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>上一篇文章快速搭建前端网络请求有跟大家介绍Vue快速搭建一个H5页面，以及怎样实现H5和Native原生事件交互。基于此基础，我们今天来用WeUI.js实现手机图片的上传。
+Package.js...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box reveal comments shadow">
+    <section class="article typo">
+      <p ct><i class='fas fa-comments'></i> 评论</p>
+      
+      
+      
+      
+      
+      
+        <section id="comments">
+          <div id="valine_container" class="valine_thread">
+            <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+          </div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'Vue-Draggable拖拽实现可视化小程序模板',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能操作流程"><span class="toc-text">功能操作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#插件配置"><span class="toc-text">插件配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DragList组件布局与属性配置"><span class="toc-text">DragList组件布局与属性配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wechatAppViewer页面布局"><span class="toc-text">wechatAppViewer页面布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#draggable-拖动组件到容器"><span class="toc-text">draggable 拖动组件到容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#当选中某一个已添加到容器的组件时"><span class="toc-text">当选中某一个已添加到容器的组件时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编辑属性容器组件"><span class="toc-text">编辑属性容器组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据模板变动，提示用户需保存"><span class="toc-text">数据模板变动，提示用户需保存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#保存模板数据到服务器"><span class="toc-text">保存模板数据到服务器</span></a></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+  
+    
+    
+  
+
+  <section class="widget related_posts shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-bookmark fa-fw" aria-hidden="true"></i><span class='name'>相关文章</span>
+    
+  </header>
+
+
+    <div class="content">
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2020\05\10\EChart\" title="E-chart 实现订单数据看板" rel="bookmark">E-chart 实现订单数据看板</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2017\08\11\brainMap\" title="巧用图解构思-百度脑图" rel="bookmark">巧用图解构思-百度脑图</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2021\07\01\groupPlugin\" title="群插件如何开发？" rel="bookmark">群插件如何开发？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\12\06\iOSSku\" title="iOS开发商品规格设置模块" rel="bookmark">iOS开发商品规格设置模块</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2020\04\28\WeuiUploader\" title="Weui-Uploader实现H5页面上传手机图片" rel="bookmark">Weui-Uploader实现H5页面上传手机图片</a></h3></div></li></ul>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+  
+    <meting-js
+      theme='#1BCDFC'
+      autoplay='true'
+      volume='0.6'
+      loop='all'
+      order='random'
+      fixed='false'
+      list-max-height='340px'
+      server='netease'
+      type='playlist'
+      id='4862553993'
+      list-folded='true'>
+    </meting-js>
+  
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="mailto:qiugaoying@163.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/gaoyingqiu"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
+    
+      
+        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+      
+    
+      
+        本站使用
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        作为主题，总访问量为
+          <span id="busuanzi_value_site_pv"><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+          次
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="http://littleWhale.xyz" target="_blank" rel="noopener">Copyright © 2016-2020 高颖</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
+    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.6/dist/scrollreveal.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      ScrollReveal().reveal('.l_main .reveal', {
+        distance: '8px',
+        duration: '800',
+        interval: '100',
+        scale: '1'
+      });
+    });
+  </script>
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script defer src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://qyanblog.oss-cn-shenzhen.aliyuncs.com/IMG_0131.JPG", "https://qyanblog.oss-cn-shenzhen.aliyuncs.com/小恐龙.JPG"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "10000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "10000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0/dist/Meting.min.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+
+  
+  <script>
+  var GUEST_INFO = ['nick','mail','link'];
+  var meta = 'nick,mail,link'.split(',').filter(function(item){
+    return GUEST_INFO.indexOf(item) > -1
+  });
+  var REQUIRED_FIELDS = ['nick','mail','link'];
+  var requiredFields = 'nick,mail'.split(',').filter(function(item){
+    return REQUIRED_FIELDS.indexOf(item) > -1
+  });
+  var valine = new Valine();
+  function emoji(path, idx, ext) {
+      return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  valine.init({
+    el: '#valine_container',
+    meta: meta,
+    
+    appId: "OnQHqq8HNcQhfFFnTapHxBju-gzGzoHsz",
+    appKey: "r0pJLLJPQqSWS9HO9MO5DkKq",
+    placeholder: "快来评论吧~",
+    pageSize:'10',
+    avatar:'robohash',
+    lang:'zh-cn',
+    visitor: 'true',
+    highlight: 'true',
+    mathJax: 'false',
+    enableQQ: 'true',
+    requiredFields: requiredFields,
+    emojiCDN: 'https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/emoji/valine/',
+    emojiMaps: emojiMaps
+  })
+  </script>
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.6.5/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  function pjax_fancybox() {
+    $(".article-entry").find("img").not('.inline').not('a img').each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 标准 markdown 描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".article-entry").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  $(function () {
+    pjax_fancybox();
+  });
+</script>
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

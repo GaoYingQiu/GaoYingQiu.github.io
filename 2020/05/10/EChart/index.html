@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html>
+<head hexo-theme='https://volantis.js.org/#2.6.6'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- 页面元数据 -->
+  
+    <title>E-chart 实现订单数据看板 - littleWhale</title>
+  
+    <meta name="keywords" content="业务,Echart">
+  
+  
+    <meta name="description" content="Echart数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百个吧，这里采取js方式对数据进行内存分组统计。
+123456789export const groupBy = (lis...">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
+    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+    <!-- ba -->
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+	  setTimeout(function() { 
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?6b3fb1292e27273cec08f6f75406a761";
+		hm.defer=true;
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+	  }, 5000);
+    })();
+    </script>
+  
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            littleWhale
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-book fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/paint/
+                  
+                  
+                  
+                    id="paint"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>胖橙的画廊
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=https://mi.aliyun.com/shop/43068
+                  
+                    rel="external nofollow noopener noreferrer"
+                  
+                  
+                    target="_blank"
+                  
+                  
+                    id="https:mialiyuncomshop43068"
+                  >
+                  <i class='fas fa-link fa-fw'></i>域名出售
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="搜索..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-book fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/paint/
+                  
+                  
+                  
+                    id="paint"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>胖橙的画廊
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=https://mi.aliyun.com/shop/43068
+                  
+                    rel="external nofollow noopener noreferrer"
+                  
+                  
+                    target="_blank"
+                  
+                  
+                    id="https:mialiyuncomshop43068"
+                  >
+                  <i class='fas fa-link fa-fw'></i>域名出售
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box reveal shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  <h1 class="title">
+    <a href="/2020/05/10/EChart/">
+      E-chart 实现订单数据看板
+    </a>
+  </h1>
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://littleWhale.xyz" target="_blank" rel="nofollow noopener">
+    <img src="https://qyanblog.oss-cn-shenzhen.aliyuncs.com/blog_avatar.JPG">
+    <p>高颖</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/Vue/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>Vue</p>
+    </a>
+  </div>
+
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2020年5月10日</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <h2 id="Echart"><a href="#Echart" class="headerlink" title="Echart"></a>Echart</h2><p>数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百个吧，这里采取js方式对数据进行内存分组统计。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> groupBy = <span class="function">(<span class="params">list, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> groups = &#123;&#125;;</span><br><span class="line">    list.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> group = <span class="built_in">JSON</span>.stringify(fn(o));</span><br><span class="line">        groups[group] = groups[group] || [];</span><br><span class="line">        groups[group].push(o);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> groups;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//引入柱形图，扇形图，地图用于数据可视化展示</span></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    ChartPie,</span><br><span class="line">    ChartBar,</span><br><span class="line">    ChartMap</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'@/components/charts'</span>;</span><br><span class="line"><span class="keyword">import</span> moment <span class="keyword">from</span> <span class="string">"moment"</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    name: <span class="string">'orderScreen'</span>,</span><br><span class="line">    components: &#123;</span><br><span class="line">        ChartPie,</span><br><span class="line">        ChartBar,</span><br><span class="line">        ChartMap</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="统计图的数据处理准备"><a href="#统计图的数据处理准备" class="headerlink" title="统计图的数据处理准备"></a>统计图的数据处理准备</h3><p>上面，我们定义了一个groupBy方法，传递参数list数据源，fn匿名函数块。通过此方法来将数据源处理返回 {key1:[ ],key2:[ ],…keyN:[ ]} 字典。<br>另外我们抽出一个业务公共方法processGroupByProperty：只需传递属性名，我们对每个分组集合进行统计金额。最后返回排名前n的数据.{“group1”:money1,”group2”:money2,groupN:”money”} 用于柱形图显示。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">processGroupByProperty:<span class="function"><span class="keyword">function</span>(<span class="params">propertyName</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dataSource = <span class="keyword">this</span>.dataList;</span><br><span class="line">    <span class="keyword">let</span> chartBarMap = &#123;&#125;; <span class="comment">//图表chart需要用的map</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//先分组</span></span><br><span class="line">    <span class="keyword">let</span> groupDic = groupBy(dataSource, (itemObj) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> itemObj[propertyName]</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//统计总和,把对象装到数组，再对数组排序，再取前10装到map</span></span><br><span class="line">    <span class="keyword">let</span> groupSortArr = [];</span><br><span class="line">    <span class="built_in">Object</span>.keys(groupDic).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> itemArr = groupDic[key];</span><br><span class="line">        <span class="keyword">let</span> sumActualFee = itemArr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">total, currentValue</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> total + currentValue.actualFee;</span><br><span class="line">        &#125;, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> keyStr = key.replace(<span class="string">'"'</span>, <span class="string">''</span>).replace(<span class="string">'"'</span>, <span class="string">''</span>);</span><br><span class="line">        groupSortArr.push(&#123;</span><br><span class="line">            <span class="string">"name"</span>: keyStr,</span><br><span class="line">            <span class="string">"value"</span>: sumActualFee</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    groupSortArr.sort(<span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> b.value - a.value</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> arrCount = groupSortArr.length &gt; <span class="number">10</span> ? <span class="number">10</span> : groupSortArr.length;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = arrCount<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">let</span> item = groupSortArr[i];</span><br><span class="line">        chartBarMap[item.name] = item.value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> chartBarMap;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><br>以下方法局部显示了业务各个柱状图的显示处理调用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">webSqlOrder: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dataSource = <span class="keyword">this</span>.dataList;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//统计总金额。</span></span><br><span class="line">    <span class="keyword">let</span> totalActualFee = dataSource.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">total, currentValue</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> total + currentValue.actualFee;</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> totalValueStr = totalActualFee.toFixed(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span>(totalValueStr.indexOf(<span class="string">".00"</span>) &gt; <span class="number">0</span>)&#123;</span><br><span class="line">        totalValueStr = totalValueStr.replace(<span class="string">".00"</span>,<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> tongjiListItem = [&#123;</span><br><span class="line">            title: <span class="string">'订单数量'</span>,</span><br><span class="line">            icon: <span class="string">'md-person-add'</span>,</span><br><span class="line">            count: dataSource.length,</span><br><span class="line">            color: <span class="string">'#2d8cf0'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            title: <span class="string">'订单总金额'</span>,</span><br><span class="line">            icon: <span class="string">'md-locate'</span>,</span><br><span class="line">            count: totalValueStr,</span><br><span class="line">            color: <span class="string">'#19be6b'</span></span><br><span class="line">        &#125;,</span><br><span class="line">    ];</span><br><span class="line">    <span class="keyword">this</span>.inforCardData = tongjiListItem;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//商品名统计</span></span><br><span class="line">    <span class="keyword">this</span>.productDescMap = <span class="keyword">this</span>.processGroupByProperty(<span class="string">"productDesc"</span>);</span><br><span class="line">    <span class="keyword">this</span>.$refs.orderProductDescChartBar.initial(<span class="keyword">this</span>.productDescMap);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//服务商top10</span></span><br><span class="line">    <span class="keyword">this</span>.orderUnionMap = <span class="keyword">this</span>.processGroupByProperty(<span class="string">"orderUnion"</span>);</span><br><span class="line">    <span class="keyword">this</span>.$refs.orderUnionChartBar.initial(<span class="keyword">this</span>.orderUnionMap);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//服务商贡献top10</span></span><br><span class="line">    <span class="keyword">this</span>.shareUnionMap = <span class="keyword">this</span>.processGroupByProperty(<span class="string">"shareUnion"</span>);</span><br><span class="line">    <span class="keyword">this</span>.$refs.shareUnionChartBar.initial(<span class="keyword">this</span>.shareUnionMap);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...等等</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以下方法是统计订单各个类型的订单数情况，用于扇形图分布展示<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//订单状态分类</span></span><br><span class="line">    <span class="keyword">this</span>.orderTypeList = [];</span><br><span class="line">    <span class="keyword">let</span> that = <span class="keyword">this</span>;</span><br><span class="line">    <span class="comment">//分组</span></span><br><span class="line">    <span class="keyword">let</span> orderStatusTextDic = groupBy(dataSource, (itemObj) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> itemObj.orderStatusText</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//统计总和</span></span><br><span class="line">    <span class="built_in">Object</span>.keys(orderStatusTextDic).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> itemArr = orderStatusTextDic[key];</span><br><span class="line">        <span class="keyword">let</span> keyStr = key.replace(<span class="string">'"'</span>, <span class="string">''</span>).replace(<span class="string">'"'</span>, <span class="string">''</span>);</span><br><span class="line">        that.orderTypeList.push(&#123;</span><br><span class="line">            name: keyStr,</span><br><span class="line">            value: itemArr.length</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">this</span>.$refs.orderStatusChartPie.initial(<span class="keyword">this</span>.orderTypeList);</span><br></pre></td></tr></table></figure></p>
+<p>以下方法是统计各个身份的订单金额用于地图分布:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">tongjiTypeListByProperty:<span class="function"><span class="keyword">function</span>(<span class="params">propertyName</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dataSource = <span class="keyword">this</span>.dataList;</span><br><span class="line">    <span class="keyword">let</span> typeList = [];</span><br><span class="line">    <span class="comment">//分组</span></span><br><span class="line">    <span class="keyword">let</span> groupDic = groupBy(dataSource, (itemObj) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> itemObj[propertyName]</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//统计总和</span></span><br><span class="line">    <span class="built_in">Object</span>.keys(groupDic).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (key !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> itemArr = groupDic[key];</span><br><span class="line">            <span class="keyword">let</span> sumActualFee = itemArr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">total, currentValue</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> total + currentValue.actualFee;</span><br><span class="line">            &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> keyStr = key.replace(<span class="string">'"'</span>, <span class="string">''</span>).replace(<span class="string">'"'</span>, <span class="string">''</span>);</span><br><span class="line">            typeList.push(&#123;</span><br><span class="line">                name: keyStr,</span><br><span class="line">                value: sumActualFee</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> typeList;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line"><span class="comment">//地图分布图</span></span><br><span class="line"><span class="keyword">this</span>.areaList = <span class="keyword">this</span>.tongjiTypeListByProperty(<span class="string">"userProvince"</span>);</span><br><span class="line"><span class="keyword">this</span>.$refs.orderChartMap.initial(<span class="keyword">this</span>.areaList);</span><br></pre></td></tr></table></figure></p>
+<h3 id="柱形图"><a href="#柱形图" class="headerlink" title="柱形图"></a>柱形图</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">"dom"</span> <span class="attr">class</span>=<span class="string">"charts chart-bar"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> echarts <span class="keyword">from</span> <span class="string">'echarts'</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> tdTheme <span class="keyword">from</span> <span class="string">'./theme.json'</span></span></span><br><span class="line"><span class="actionscript">echarts.registerTheme(<span class="string">'tdTheme'</span>, tdTheme)</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="actionscript">  name: <span class="string">'ChartBar'</span>,</span></span><br><span class="line">  props: &#123;</span><br><span class="line"><span class="javascript">    text: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">    subtext: <span class="built_in">String</span></span></span><br><span class="line">  &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="actionscript">      dom: <span class="literal">null</span>,</span></span><br><span class="line"><span class="actionscript">      mapData: <span class="literal">null</span>,</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line"><span class="actionscript">    initial: <span class="function"><span class="keyword">function</span> <span class="params">(dataObj)</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.mapData = dataObj;</span></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.layoutChartBar();</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="actionscript">    layoutChartBar:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> xAxisData = <span class="built_in">Object</span>.keys(<span class="keyword">this</span>.mapData)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> seriesData = <span class="built_in">Object</span>.values(<span class="keyword">this</span>.mapData)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> option = &#123;</span></span><br><span class="line">          title: &#123;</span><br><span class="line"><span class="actionscript">            text: <span class="keyword">this</span>.text,</span></span><br><span class="line"><span class="actionscript">            subtext: <span class="keyword">this</span>.subtext,</span></span><br><span class="line"><span class="actionscript">            x: <span class="string">'center'</span></span></span><br><span class="line">          &#125;,</span><br><span class="line">          tooltip: &#123;</span><br><span class="line"><span class="actionscript">            trigger: <span class="string">'item'</span>,</span></span><br><span class="line"><span class="actionscript">            formatter:<span class="function"><span class="keyword">function</span><span class="params">(datas)</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">              <span class="keyword">let</span> valueStr = datas.value.toFixed(<span class="number">2</span>);</span></span><br><span class="line"><span class="actionscript">              <span class="keyword">if</span>(valueStr.indexOf(<span class="string">".00"</span>) &gt; <span class="number">0</span>)&#123;</span></span><br><span class="line"><span class="actionscript">                valueStr = valueStr.replace(<span class="string">".00"</span>,<span class="string">""</span>);</span></span><br><span class="line">              &#125;</span><br><span class="line"><span class="actionscript">              <span class="keyword">return</span> datas.name +<span class="string">": "</span>+ valueStr +<span class="string">"元"</span>;</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          grid: &#123;</span><br><span class="line"><span class="actionscript">                left: <span class="string">'3%'</span>,</span></span><br><span class="line"><span class="actionscript">                right: <span class="string">'9%'</span>,</span></span><br><span class="line"><span class="actionscript">                bottom: <span class="string">'3%'</span>,</span></span><br><span class="line"><span class="actionscript">                containLabel: <span class="literal">true</span></span></span><br><span class="line">          &#125;,</span><br><span class="line">          xAxis: &#123;</span><br><span class="line"><span class="actionscript">            type: <span class="string">'value'</span>,</span></span><br><span class="line">			splitLine: &#123;</span><br><span class="line"><span class="actionscript">				show: <span class="literal">true</span>,</span></span><br><span class="line">			   lineStyle:&#123;</span><br><span class="line"><span class="actionscript">			       color: [<span class="string">'#f7f7f7'</span>],</span></span><br><span class="line">			       width: 1,</span><br><span class="line"><span class="actionscript">			       type: <span class="string">'solid'</span>,</span></span><br><span class="line">			   &#125;</span><br><span class="line">			&#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          yAxis: &#123;</span><br><span class="line"><span class="actionscript">            type: <span class="string">'category'</span>,</span></span><br><span class="line">            data: xAxisData,</span><br><span class="line"><span class="actionscript">            scale: <span class="literal">true</span>,</span></span><br><span class="line">            axisLabel: &#123;</span><br><span class="line">              margin: 2,</span><br><span class="line">              interval: 0,</span><br><span class="line"><span class="actionscript">              formatter: <span class="function"><span class="keyword">function</span><span class="params">(value)</span> </span>&#123;</span></span><br><span class="line">                    if (value.length &gt; 6) &#123;</span><br><span class="line"><span class="actionscript">                        <span class="keyword">return</span> value.substring(<span class="number">0</span>, <span class="number">6</span>) + <span class="string">"..."</span>;</span></span><br><span class="line"><span class="actionscript">                    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">                        <span class="keyword">return</span> value;</span></span><br><span class="line">                    &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">			splitLine: &#123;</span><br><span class="line"><span class="actionscript">				show: <span class="literal">true</span>,</span></span><br><span class="line">			    lineStyle:&#123;</span><br><span class="line"><span class="actionscript">		            color: [<span class="string">'#f7f7f7'</span>],</span></span><br><span class="line">		            width: 1,</span><br><span class="line"><span class="actionscript">		            type: <span class="string">'solid'</span>,</span></span><br><span class="line">			    &#125;</span><br><span class="line">			 &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          series: [&#123;</span><br><span class="line">            data: seriesData,</span><br><span class="line"><span class="actionscript">            type: <span class="string">'bar'</span>,</span></span><br><span class="line">			barWidth:13,</span><br><span class="line">			itemStyle:&#123;</span><br><span class="line">			  normal:&#123;</span><br><span class="line">			     label:&#123;</span><br><span class="line"><span class="actionscript">			       show:<span class="literal">true</span> ,</span></span><br><span class="line"><span class="actionscript">			       position:<span class="string">'right'</span>,</span></span><br><span class="line">			       textStyle:&#123;</span><br><span class="line"><span class="actionscript">			          color:<span class="string">'gray'</span>,</span></span><br><span class="line">			          fontSize:12</span><br><span class="line">			       &#125;,</span><br><span class="line"><span class="actionscript">			       formatter:<span class="function"><span class="keyword">function</span><span class="params">(datas)</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">			         <span class="keyword">let</span> valueStr = datas.value.toFixed(<span class="number">2</span>);</span></span><br><span class="line"><span class="actionscript">			         <span class="keyword">if</span>(valueStr.indexOf(<span class="string">".00"</span>) &gt; <span class="number">0</span>)&#123;</span></span><br><span class="line"><span class="actionscript">			           valueStr = valueStr.replace(<span class="string">".00"</span>,<span class="string">""</span>);</span></span><br><span class="line">			         &#125;</span><br><span class="line"><span class="actionscript">			         <span class="keyword">return</span>  valueStr;</span></span><br><span class="line">			       &#125;</span><br><span class="line">			     &#125;</span><br><span class="line">			  &#125;</span><br><span class="line">			&#125;</span><br><span class="line">          &#125;]</span><br><span class="line">        &#125;</span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.dom = echarts.init(<span class="keyword">this</span>.$refs.dom, <span class="string">'tdTheme'</span>);</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.dom.setOption(option);</span></span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="扇形图"><a href="#扇形图" class="headerlink" title="扇形图"></a>扇形图</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">"dom"</span> <span class="attr">class</span>=<span class="string">"charts chart-pie"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> echarts <span class="keyword">from</span> <span class="string">'echarts'</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> tdTheme <span class="keyword">from</span> <span class="string">'./theme.json'</span></span></span><br><span class="line"><span class="actionscript">echarts.registerTheme(<span class="string">'tdTheme'</span>, tdTheme)</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="actionscript">  name: <span class="string">'ChartPie'</span>,</span></span><br><span class="line">  props: &#123;</span><br><span class="line"><span class="javascript">    text: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">    subtext: <span class="built_in">String</span></span></span><br><span class="line">  &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="actionscript">      dom: <span class="literal">null</span>,</span></span><br><span class="line">      listData:[]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    resize () &#123;</span><br><span class="line"><span class="actionscript">      <span class="keyword">this</span>.dom.resize()</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="actionscript">    initial: <span class="function"><span class="keyword">function</span> <span class="params">(list)</span> </span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="actionscript">      <span class="comment">//测试数据</span></span></span><br><span class="line"><span class="actionscript">      <span class="comment">// var arr = [&#123; value: 335, name: '直接访问1' &#125;,</span></span></span><br><span class="line"><span class="actionscript">      <span class="comment">// &#123; value: 310, name: '邮件营销1' &#125;,</span></span></span><br><span class="line"><span class="actionscript">      <span class="comment">// &#123; value: 234, name: '联盟广告1' &#125;,</span></span></span><br><span class="line"><span class="actionscript">      <span class="comment">// &#123; value: 135, name: '视频广告1' &#125;,</span></span></span><br><span class="line"><span class="actionscript">      <span class="comment">// &#123; value: 1548, name: '搜索引擎1' &#125;];</span></span></span><br><span class="line"></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.listData = list;</span></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.layoutPieData();</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="actionscript">    layoutPieData:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">let</span> legend = <span class="keyword">this</span>.listData.map(<span class="function"><span class="params">_</span> =&gt;</span> _.name)</span></span><br><span class="line"><span class="javascript">          <span class="keyword">let</span> option = &#123;</span></span><br><span class="line">            title: &#123;</span><br><span class="line"><span class="actionscript">              text: <span class="keyword">this</span>.text,</span></span><br><span class="line"><span class="actionscript">              subtext: <span class="keyword">this</span>.subtext,</span></span><br><span class="line"><span class="actionscript">              x: <span class="string">'center'</span></span></span><br><span class="line">            &#125;,</span><br><span class="line">            tooltip: &#123;</span><br><span class="line"><span class="actionscript">              trigger: <span class="string">'item'</span>,</span></span><br><span class="line"><span class="actionscript">              formatter: <span class="string">'&#123;b&#125; :&#123;c&#125; (占比&#123;d&#125;%)'</span></span></span><br><span class="line">            &#125;,</span><br><span class="line">            legend: &#123;</span><br><span class="line"><span class="actionscript">              orient: <span class="string">'vertical'</span>,</span></span><br><span class="line"><span class="actionscript">              left: <span class="string">'left'</span>,</span></span><br><span class="line">              data: legend</span><br><span class="line">            &#125;,</span><br><span class="line">            series: [</span><br><span class="line">              &#123;</span><br><span class="line">                label: &#123;</span><br><span class="line"><span class="actionscript">                    show: <span class="literal">false</span>,</span></span><br><span class="line"><span class="actionscript">                    position: <span class="string">'center'</span></span></span><br><span class="line">                &#125;,</span><br><span class="line">                emphasis: &#123;</span><br><span class="line">                  label: &#123;</span><br><span class="line"><span class="actionscript">                          show: <span class="literal">true</span>,</span></span><br><span class="line"><span class="actionscript">                          fontSize: <span class="string">'28'</span>,</span></span><br><span class="line"><span class="actionscript">                          fontWeight: <span class="string">'normal'</span></span></span><br><span class="line">                      &#125;</span><br><span class="line">                &#125;,</span><br><span class="line"><span class="actionscript">                type: <span class="string">'pie'</span>,</span></span><br><span class="line"><span class="actionscript">                radius: [<span class="string">'50%'</span>, <span class="string">'70%'</span>],</span></span><br><span class="line"><span class="actionscript">                data: <span class="keyword">this</span>.listData,</span></span><br><span class="line">                labelLine:&#123;</span><br><span class="line"><span class="actionscript">                  show:<span class="literal">false</span></span></span><br><span class="line">                &#125;,</span><br><span class="line">                itemStyle: &#123;</span><br><span class="line">                  emphasis: &#123;</span><br><span class="line">                    shadowBlur: 10,</span><br><span class="line">                    shadowOffsetX: 0,</span><br><span class="line"><span class="actionscript">                    shadowColor: <span class="string">'rgba(0, 0, 0, 0.5)'</span></span></span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            ]</span><br><span class="line">          &#125;</span><br><span class="line"><span class="actionscript">          <span class="keyword">this</span>.dom = echarts.init(<span class="keyword">this</span>.$refs.dom, <span class="string">'tdTheme'</span>)</span></span><br><span class="line"><span class="actionscript">          <span class="keyword">this</span>.dom.setOption(option)</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="地图"><a href="#地图" class="headerlink" title="地图"></a>地图</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">"dom"</span> <span class="attr">class</span>=<span class="string">"charts chart-map"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> echarts <span class="keyword">from</span> <span class="string">'echarts'</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> tdTheme <span class="keyword">from</span> <span class="string">'./theme.json'</span></span></span><br><span class="line"><span class="actionscript"><span class="meta"><span class="meta-keyword">import</span> 'echarts/map/js/china.js';</span></span></span><br><span class="line"><span class="actionscript">echarts.registerTheme(<span class="string">'tdTheme'</span>, tdTheme)</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="actionscript">  name: <span class="string">'ChartMap'</span>,</span></span><br><span class="line">  props: &#123;</span><br><span class="line"><span class="javascript">    text: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">    subtext: <span class="built_in">String</span></span></span><br><span class="line">  &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="actionscript">      dom: <span class="literal">null</span>,</span></span><br><span class="line">      listData:[]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    resize () &#123;</span><br><span class="line"><span class="actionscript">      <span class="keyword">this</span>.dom.resize()</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="actionscript">    initial: <span class="function"><span class="keyword">function</span> <span class="params">(list)</span> </span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.listData = list;</span></span><br><span class="line"><span class="actionscript">       <span class="keyword">this</span>.layoutPieData();</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="actionscript">    layoutPieData:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">let</span> option = &#123;</span></span><br><span class="line">            title: &#123;</span><br><span class="line"><span class="actionscript">              text: <span class="keyword">this</span>.text,</span></span><br><span class="line"><span class="actionscript">              subtext: <span class="keyword">this</span>.subtext,</span></span><br><span class="line"><span class="actionscript">              x: <span class="string">'center'</span></span></span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            tooltip: &#123;</span><br><span class="line"><span class="actionscript">                    formatter:<span class="function"><span class="keyword">function</span><span class="params">(params,ticket, callback)</span></span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">                      <span class="keyword">let</span> valueStr = <span class="string">"0"</span>;</span></span><br><span class="line"><span class="javascript">                      <span class="keyword">if</span> (!<span class="built_in">isNaN</span>(params.value)) &#123;</span></span><br><span class="line">                        valueStr = params.value.toFixed(2);</span><br><span class="line"><span class="actionscript">                        <span class="keyword">if</span>(valueStr.indexOf(<span class="string">".00"</span>) &gt; <span class="number">0</span>)&#123;</span></span><br><span class="line"><span class="actionscript">                          valueStr = valueStr.replace(<span class="string">".00"</span>,<span class="string">""</span>);</span></span><br><span class="line">                        &#125;</span><br><span class="line">                      &#125;</span><br><span class="line"></span><br><span class="line"><span class="actionscript">                        <span class="keyword">return</span> params.seriesName+<span class="string">'&lt;br /&gt;'</span>+params.name+<span class="string">'：'</span>+valueStr +<span class="string">"元"</span></span></span><br><span class="line">                    &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            visualMap: &#123;</span><br><span class="line">                min: 0,</span><br><span class="line">                max: 1500,</span><br><span class="line"><span class="actionscript">                left: <span class="string">'left'</span>,</span></span><br><span class="line"><span class="actionscript">                top: <span class="string">'bottom'</span>,</span></span><br><span class="line"><span class="actionscript">                text: [<span class="string">'高'</span>,<span class="string">'低'</span>],</span></span><br><span class="line">                inRange: &#123;</span><br><span class="line"><span class="actionscript">                    color: [<span class="string">'#e0ffff'</span>, <span class="string">'#006edd'</span>]</span></span><br><span class="line">                &#125;,</span><br><span class="line"><span class="actionscript">                show:<span class="literal">false</span></span></span><br><span class="line">            &#125;,</span><br><span class="line">            geo: &#123;</span><br><span class="line"><span class="actionscript">                map: <span class="string">'china'</span>,</span></span><br><span class="line"><span class="actionscript">                roam: <span class="literal">false</span>,</span></span><br><span class="line">                zoom:1.23,</span><br><span class="line">                label: &#123;</span><br><span class="line">                    normal: &#123;</span><br><span class="line"><span class="actionscript">                        show: <span class="literal">true</span>,</span></span><br><span class="line"><span class="actionscript">                        fontSize:<span class="string">'10'</span>,</span></span><br><span class="line"><span class="actionscript">                        color: <span class="string">'rgba(0,0,0,0.7)'</span></span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                itemStyle: &#123;</span><br><span class="line">                    normal:&#123;</span><br><span class="line"><span class="actionscript">                        borderColor: <span class="string">'rgba(0, 0, 0, 0.2)'</span></span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    emphasis:&#123;</span><br><span class="line"><span class="actionscript">                        areaColor: <span class="string">'#F3B329'</span>,</span></span><br><span class="line">                        shadowOffsetX: 0,</span><br><span class="line">                        shadowOffsetY: 0,</span><br><span class="line">                        shadowBlur: 20,</span><br><span class="line">                        borderWidth: 0,</span><br><span class="line"><span class="actionscript">                        shadowColor: <span class="string">'rgba(0, 0, 0, 0.5)'</span></span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            series : [</span><br><span class="line">                &#123;</span><br><span class="line"><span class="actionscript">                    name: <span class="string">'订单总金额'</span>,</span></span><br><span class="line"><span class="actionscript">                    type: <span class="string">'map'</span>,</span></span><br><span class="line">                    geoIndex: 0,</span><br><span class="line"><span class="actionscript">                    data:<span class="keyword">this</span>.listData</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">          &#125;;</span><br><span class="line"><span class="actionscript">          <span class="keyword">this</span>.dom = echarts.init(<span class="keyword">this</span>.$refs.dom, <span class="string">'tdTheme'</span>);</span></span><br><span class="line"><span class="actionscript">          <span class="keyword">this</span>.dom.setOption(option);</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="页面布局"><a href="#页面布局" class="headerlink" title="页面布局"></a>页面布局</h3><p>以下是柱形图，扇形图，地图 三种统计图组件的显示。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel weui-panel_access"</span>  &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel__bd"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ChartBar</span> <span class="attr">ref</span>=<span class="string">"orderShopChartBar"</span>  <span class="attr">style</span>=<span class="string">"height:300px"</span> <span class="attr">text</span>=<span class="string">"店铺销售金额 Top10"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel weui-panel_access"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel__bd"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ChartPie</span> <span class="attr">ref</span>=<span class="string">"orderStatusChartPie"</span> <span class="attr">style</span>=<span class="string">"height:300px"</span>  <span class="attr">text</span>=<span class="string">"订单状态对比"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel weui-panel_access"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"weui-panel__bd"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ChartMap</span> <span class="attr">ref</span>=<span class="string">"orderChartMap"</span> <span class="attr">style</span>=<span class="string">"height:300px"</span>  <span class="attr">text</span>=<span class="string">"订单交易数据分布图"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Package-json配置"><a href="#Package-json配置" class="headerlink" title="Package.json配置"></a>Package.json配置</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">"dependencies": &#123;</span><br><span class="line">    "echarts": "^4.7.0",</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://echarts.apache.org/" target="_blank" rel="noopener">Echart官网</a><br><a href="https://echarts.apache.org/zh/theme-builder.html" target="_blank" rel="noopener">Echart主题下载</a></p>
+
+          
+            <div class='article_footer'>
+              
+                
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+
+
+  
+
+  
+
+  
+    
+    
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://qyanblog.oss-cn-shenzhen.aliyuncs.com/wechat_littleWhale.JPG'
+        
+          height='225px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+              
+            </div>
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-11-02T11:07:42+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2021年11月2日</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/%E4%B8%9A%E5%8A%A1/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>业务</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/Echart/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>Echart</p></a></div>
+
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://www.littlewhale.xyz/2020/05/10/EChart/&title=E-chart 实现订单数据看板 - littleWhale&summary=Echart数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百个吧，这里采取js方式对数据进行内存分组统计。
+123456789export const groupBy = (list, fn) =&gt; &#123;    const groups = &#123;&#125;;    list.forEach(function(o) &#123;        const group = JSON.stringify(fn(o));        groups[group] = groups[group] || [];        groups[group].push(o);    &#125;);    return groups;&#125;"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://www.littlewhale.xyz/2020/05/10/EChart/&title=E-chart 实现订单数据看板 - littleWhale&summary=Echart数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百个吧，这里采取js方式对数据进行内存分组统计。
+123456789export const groupBy = (list, fn) =&gt; &#123;    const groups = &#123;&#125;;    list.forEach(function(o) &#123;        const group = JSON.stringify(fn(o));        groups[group] = groups[group] || [];        groups[group].push(o);    &#125;);    return groups;&#125;"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://www.littlewhale.xyz/2020/05/10/EChart/&title=E-chart 实现订单数据看板 - littleWhale&summary=Echart数据看板首要问题，就是我们要解决数据分组的问题。你可以存储到浏览器的websql中通过sql语句groupBy来进行分组统计，或者你自己用js对数据进行分组。由于数据量有限，也就几百个吧，这里采取js方式对数据进行内存分组统计。
+123456789export const groupBy = (list, fn) =&gt; &#123;    const groups = &#123;&#125;;    list.forEach(function(o) &#123;        const group = JSON.stringify(fn(o));        groups[group] = groups[group] || [];        groups[group].push(o);    &#125;);    return groups;&#125;"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+              <a class='prev' href='/2021/06/25/OfficeEnglishTips/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>Office English Tips</p>
+                <p class='content'>Talk over someone by accident(当不小心打断别人时)：Sorry I interrupted, you were saying … ?Sorry go ahead/ ...</p>
+              </a>
+            
+            
+              <a class='next' href='/2020/05/01/vueDraggable/'>
+                <p class='title'>Vue-Draggable拖拽实现可视化小程序模板<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>功能操作流程
+从左侧拖入组件到中间容器内。左侧组件不变，只是clone节点到中间容器。
+中间容器不可再拖入左侧。中间容器各个部件可以在容器内上下拖动进行排序。
+支持同类型多组件。从左侧拖入相同组...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box reveal comments shadow">
+    <section class="article typo">
+      <p ct><i class='fas fa-comments'></i> 评论</p>
+      
+      
+      
+      
+      
+      
+        <section id="comments">
+          <div id="valine_container" class="valine_thread">
+            <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+          </div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'E-chart 实现订单数据看板',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Echart"><span class="toc-text">Echart</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#统计图的数据处理准备"><span class="toc-text">统计图的数据处理准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#柱形图"><span class="toc-text">柱形图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扇形图"><span class="toc-text">扇形图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地图"><span class="toc-text">地图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#页面布局"><span class="toc-text">页面布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Package-json配置"><span class="toc-text">Package.json配置</span></a></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+  
+    
+    
+  
+
+  <section class="widget related_posts shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-bookmark fa-fw" aria-hidden="true"></i><span class='name'>相关文章</span>
+    
+  </header>
+
+
+    <div class="content">
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2017\08\11\brainMap\" title="巧用图解构思-百度脑图" rel="bookmark">巧用图解构思-百度脑图</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2021\07\01\groupPlugin\" title="群插件如何开发？" rel="bookmark">群插件如何开发？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\12\06\iOSSku\" title="iOS开发商品规格设置模块" rel="bookmark">iOS开发商品规格设置模块</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2021\07\01\input@\" title="聊天输入框@某人" rel="bookmark">聊天输入框@某人</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2020\04\28\WeuiUploader\" title="Weui-Uploader实现H5页面上传手机图片" rel="bookmark">Weui-Uploader实现H5页面上传手机图片</a></h3></div></li></ul>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+  
+    <meting-js
+      theme='#1BCDFC'
+      autoplay='true'
+      volume='0.6'
+      loop='all'
+      order='random'
+      fixed='false'
+      list-max-height='340px'
+      server='netease'
+      type='playlist'
+      id='4862553993'
+      list-folded='true'>
+    </meting-js>
+  
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="mailto:qiugaoying@163.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/gaoyingqiu"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
+    
+      
+        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+      
+    
+      
+        本站使用
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        作为主题，总访问量为
+          <span id="busuanzi_value_site_pv"><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+          次
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="http://littleWhale.xyz" target="_blank" rel="noopener">Copyright © 2016-2020 高颖</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
+    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.6/dist/scrollreveal.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      ScrollReveal().reveal('.l_main .reveal', {
+        distance: '8px',
+        duration: '800',
+        interval: '100',
+        scale: '1'
+      });
+    });
+  </script>
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script defer src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://qyanblog.oss-cn-shenzhen.aliyuncs.com/IMG_0131.JPG", "https://qyanblog.oss-cn-shenzhen.aliyuncs.com/小恐龙.JPG"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "10000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "10000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0/dist/Meting.min.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+
+  
+  <script>
+  var GUEST_INFO = ['nick','mail','link'];
+  var meta = 'nick,mail,link'.split(',').filter(function(item){
+    return GUEST_INFO.indexOf(item) > -1
+  });
+  var REQUIRED_FIELDS = ['nick','mail','link'];
+  var requiredFields = 'nick,mail'.split(',').filter(function(item){
+    return REQUIRED_FIELDS.indexOf(item) > -1
+  });
+  var valine = new Valine();
+  function emoji(path, idx, ext) {
+      return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  valine.init({
+    el: '#valine_container',
+    meta: meta,
+    
+    appId: "OnQHqq8HNcQhfFFnTapHxBju-gzGzoHsz",
+    appKey: "r0pJLLJPQqSWS9HO9MO5DkKq",
+    placeholder: "快来评论吧~",
+    pageSize:'10',
+    avatar:'robohash',
+    lang:'zh-cn',
+    visitor: 'true',
+    highlight: 'true',
+    mathJax: 'false',
+    enableQQ: 'true',
+    requiredFields: requiredFields,
+    emojiCDN: 'https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/emoji/valine/',
+    emojiMaps: emojiMaps
+  })
+  </script>
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.6.5/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  function pjax_fancybox() {
+    $(".article-entry").find("img").not('.inline').not('a img').each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 标准 markdown 描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".article-entry").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  $(function () {
+    pjax_fancybox();
+  });
+</script>
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
