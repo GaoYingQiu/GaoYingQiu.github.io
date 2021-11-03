@@ -1,3 +1,5 @@
+https://www.littlewhale.xyz/2021/11/02/gradleTips/
+https://www.littlewhale.xyz/2021/11/02/hexoTips/
 https://www.littlewhale.xyz/2021/07/21/atomic/
 https://www.littlewhale.xyz/2021/07/19/GCD/
 https://www.littlewhale.xyz/2021/07/16/ValueTypes/
@@ -6,5 +8,3 @@ https://www.littlewhale.xyz/2021/07/15/DependencyInjection/
 https://www.littlewhale.xyz/2021/07/15/UserDefaults/
 https://www.littlewhale.xyz/2021/07/14/UnitTestAsync/
 https://www.littlewhale.xyz/2021/07/14/unitest/
-https://www.littlewhale.xyz/2021/07/14/swiftUnitTest/
-https://www.littlewhale.xyz/2021/07/13/tableDriver/
